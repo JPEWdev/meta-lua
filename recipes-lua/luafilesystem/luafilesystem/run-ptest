@@ -1,0 +1,21 @@
+#! /bin/sh
+TESTS="$(pwd)/tests/*.lua"
+
+TEMP=$(mktemp -d)
+cd $TEMP
+
+for t in $TESTS; do
+    name=$(basename $t)
+    lua $t > output 2>&1
+    ret=$?
+    cat output
+    if [ $ret -ne 0 ]; then
+        echo "FAIL: ${name%.lua}"
+    else
+        echo "PASS: ${name%.lua}"
+    fi
+    rm -f output
+done
+
+cd /
+rm -rf $TEMP
